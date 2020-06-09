@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/canal.iml" filepath="$PROJECT_DIR$/temp-canal/canal/canal.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/canal-comment.iml" filepath="$PROJECT_DIR$/.idea/canal-comment.iml" />
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/admin/canal.admin.iml" filepath="$PROJECT_DIR$/temp-canal/canal/admin/canal.admin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/admin/admin-ui/canal.admin-ui.iml" filepath="$PROJECT_DIR$/temp-canal/canal/admin/admin-ui/canal.admin-ui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/admin/admin-web/canal.admin-web.iml" filepath="$PROJECT_DIR$/temp-canal/canal/admin/admin-web/canal.admin-web.iml" />
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/client/canal.client.iml" filepath="$PROJECT_DIR$/temp-canal/canal/client/canal.client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/client-adapter/canal.client-adapter.iml" filepath="$PROJECT_DIR$/temp-canal/canal/client-adapter/canal.client-adapter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/common/canal.common.iml" filepath="$PROJECT_DIR$/temp-canal/canal/common/canal.common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/connector/canal.connector.iml" filepath="$PROJECT_DIR$/temp-canal/canal/connector/canal.connector.iml" />
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/deployer/canal.deployer.iml" filepath="$PROJECT_DIR$/temp-canal/canal/deployer/canal.deployer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/example/canal.example.iml" filepath="$PROJECT_DIR$/temp-canal/canal/example/canal.example.iml" />
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/filter/canal.filter.iml" filepath="$PROJECT_DIR$/temp-canal/canal/filter/canal.filter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/instance/canal.instance.iml" filepath="$PROJECT_DIR$/temp-canal/canal/instance/canal.instance.iml" />
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/instance/core/canal.instance.core.iml" filepath="$PROJECT_DIR$/temp-canal/canal/instance/core/canal.instance.core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/instance/manager/canal.instance.manager.iml" filepath="$PROJECT_DIR$/temp-canal/canal/instance/manager/canal.instance.manager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/instance/spring/canal.instance.spring.iml" filepath="$PROJECT_DIR$/temp-canal/canal/instance/spring/canal.instance.spring.iml" />
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/meta/canal.meta.iml" filepath="$PROJECT_DIR$/temp-canal/canal/meta/canal.meta.iml" />
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/parse/canal.parse.iml" filepath="$PROJECT_DIR$/temp-canal/canal/parse/canal.parse.iml" />
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/dbsync/canal.parse.dbsync.iml" filepath="$PROJECT_DIR$/temp-canal/canal/dbsync/canal.parse.dbsync.iml" />
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/driver/canal.parse.driver.iml" filepath="$PROJECT_DIR$/temp-canal/canal/driver/canal.parse.driver.iml" />
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/prometheus/canal.prometheus.iml" filepath="$PROJECT_DIR$/temp-canal/canal/prometheus/canal.prometheus.iml" />
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/protocol/canal.protocol.iml" filepath="$PROJECT_DIR$/temp-canal/canal/protocol/canal.protocol.iml" />
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/server/canal.server.iml" filepath="$PROJECT_DIR$/temp-canal/canal/server/canal.server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/sink/canal.sink.iml" filepath="$PROJECT_DIR$/temp-canal/canal/sink/canal.sink.iml" />
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/store/canal.store.iml" filepath="$PROJECT_DIR$/temp-canal/canal/store/canal.store.iml" />
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/client-adapter/common/client-adapter.common.iml" filepath="$PROJECT_DIR$/temp-canal/canal/client-adapter/common/client-adapter.common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/client-adapter/es6x/client-adapter.es6x.iml" filepath="$PROJECT_DIR$/temp-canal/canal/client-adapter/es6x/client-adapter.es6x.iml" />
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/client-adapter/es7x/client-adapter.es7x.iml" filepath="$PROJECT_DIR$/temp-canal/canal/client-adapter/es7x/client-adapter.es7x.iml" />
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/client-adapter/escore/client-adapter.escore.iml" filepath="$PROJECT_DIR$/temp-canal/canal/client-adapter/escore/client-adapter.escore.iml" />
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/client-adapter/hbase/client-adapter.hbase.iml" filepath="$PROJECT_DIR$/temp-canal/canal/client-adapter/hbase/client-adapter.hbase.iml" />
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/client-adapter/kudu/client-adapter.kudu.iml" filepath="$PROJECT_DIR$/temp-canal/canal/client-adapter/kudu/client-adapter.kudu.iml" />
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/client-adapter/launcher/client-adapter.launcher.iml" filepath="$PROJECT_DIR$/temp-canal/canal/client-adapter/launcher/client-adapter.launcher.iml" />
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/client-adapter/logger/client-adapter.logger.iml" filepath="$PROJECT_DIR$/temp-canal/canal/client-adapter/logger/client-adapter.logger.iml" />
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/client-adapter/rdb/client-adapter.rdb.iml" filepath="$PROJECT_DIR$/temp-canal/canal/client-adapter/rdb/client-adapter.rdb.iml" />
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/connector/core/connector.core.iml" filepath="$PROJECT_DIR$/temp-canal/canal/connector/core/connector.core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/connector/kafka-connector/connector.kafka.iml" filepath="$PROJECT_DIR$/temp-canal/canal/connector/kafka-connector/connector.kafka.iml" />
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/connector/rabbitmq-connector/connector.rabbitmq.iml" filepath="$PROJECT_DIR$/temp-canal/canal/connector/rabbitmq-connector/connector.rabbitmq.iml" />
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/connector/rocketmq-connector/connector.rocketmq.iml" filepath="$PROJECT_DIR$/temp-canal/canal/connector/rocketmq-connector/connector.rocketmq.iml" />
+      <module fileurl="file://$PROJECT_DIR$/temp-canal/canal/connector/tcp-connector/connector.tcp.iml" filepath="$PROJECT_DIR$/temp-canal/canal/connector/tcp-connector/connector.tcp.iml" />
+    </modules>
+  </component>
+</project>
