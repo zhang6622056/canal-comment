@@ -1,5 +1,6 @@
 package com.alibaba.otter.canal.parse.inbound.mysql.rds;
 
+import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -41,10 +42,11 @@ public class RdsBinlogEventParserProxy extends MysqlEventParser {
                                                                     }
                                                                 });
 
-    @Override
-    public void start() {
+
+
+    private final void setAliMysqlSettings(){
         if (rdsLocalBinlogEventParser == null && StringUtils.isNotEmpty(accesskey) && StringUtils.isNotEmpty(secretkey)
-            && StringUtils.isNotEmpty(instanceId)) {
+                && StringUtils.isNotEmpty(instanceId)) {
             rdsLocalBinlogEventParser = new RdsLocalBinlogEventParser();
             // rds oss mode
             setRdsOssMode(true);
@@ -108,7 +110,14 @@ public class RdsBinlogEventParserProxy extends MysqlEventParser {
                 }
             });
         }
+    }
 
+
+
+
+    @Override
+    public void start() {
+        setAliMysqlSettings();
         super.start();
     }
 

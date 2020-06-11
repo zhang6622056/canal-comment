@@ -52,8 +52,8 @@ public class MysqlConnection implements ErosaConnection {
 
     // tsdb releated
     private AuthenticationInfo  authInfo;
-    protected int               connTimeout    = 5 * 1000;                                      // 5秒
-    protected int               soTimeout      = 60 * 60 * 1000;                                // 1小时
+    protected int               connTimeout    = 5 * 1000;                                      // 连接超时
+    protected int               soTimeout      = 60 * 60 * 1000;                                // 读取超时
     private int                 binlogChecksum = LogEvent.BINLOG_CHECKSUM_ALG_OFF;
     // dump binlog bytes, 暂不包括meta与TSDB
     private AtomicLong          receivedBinlogBytes;

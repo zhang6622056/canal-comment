@@ -71,7 +71,7 @@ public abstract class AbstractEventParser<EVENT> extends AbstractCanalLifeCycle 
     protected long                                   parsingInterval            = -1;
     protected long                                   processingInterval         = -1;
 
-    // 认证信息
+    // - 执行中的，master的认证信息，来自masterInfo
     protected volatile AuthenticationInfo            runningInfo;
     protected String                                 destination;
 
@@ -156,33 +156,45 @@ public abstract class AbstractEventParser<EVENT> extends AbstractCanalLifeCycle 
 
     public void start() {
         super.start();
+
+
+        //- 为了便于日志中输出destination,具体可参考
+        //- https://www.jianshu.com/p/06b1d35526c2
         MDC.put("destination", destination);
+
+
         // 配置transaction buffer
-        // 初始化缓冲队列
+        // 初始化缓冲队列,
         transactionBuffer.setBufferSize(transactionSize);// 设置buffer大小
         transactionBuffer.start();
+
+
         // 构造bin log parser
         binlogParser = buildParser();// 初始化一下BinLogParser
         binlogParser.start();
+
+
         // 启动工作线程
         parseThread = new Thread(new Runnable() {
 
             public void run() {
+                //- 设置log变量
                 MDC.put("destination", String.valueOf(destination));
+
+
                 ErosaConnection erosaConnection = null;
                 while (running) {
                     try {
                         // 开始执行replication
-                        // 1. 构造Erosa连接
+                        // 1. 构造Erosa连接  MysqlConnection
                         erosaConnection = buildErosaConnection();
-
                         // 2. 启动一个心跳线程
                         startHeartBeat(erosaConnection);
-
                         // 3. 执行dump前的准备工作
                         preDump(erosaConnection);
+                        // 链接
+                        erosaConnection.connect();
 
-                        erosaConnection.connect();// 链接
 
                         long queryServerId = erosaConnection.queryServerId();
                         if (queryServerId != 0) {
@@ -193,13 +205,9 @@ public abstract class AbstractEventParser<EVENT> extends AbstractCanalLifeCycle 
                         logger.warn("---> begin to find start position, it will be long time for reset or first position");
                         EntryPosition position = findStartPosition(erosaConnection);
                         final EntryPosition startPosition = position;
-                        if (startPosition == null) {
-                            throw new PositionNotFoundException("can't find start position for " + destination);
-                        }
-
+                        if (startPosition == null) { throw new PositionNotFoundException("can't find start position for " + destination); }
                         if (!processTableMeta(startPosition)) {
-                            throw new CanalParseException("can't find init table meta for " + destination
-                                                          + " with position : " + startPosition);
+                            throw new CanalParseException("can't find init table meta for " + destination + " with position : " + startPosition);
                         }
                         long end = System.currentTimeMillis();
                         logger.warn("---> find start position successfully, {}", startPosition.toString() + " cost : "
@@ -209,9 +217,7 @@ public abstract class AbstractEventParser<EVENT> extends AbstractCanalLifeCycle 
                         erosaConnection.reconnect();
 
                         final SinkFunction sinkHandler = new SinkFunction<EVENT>() {
-
                             private LogPosition lastPosition;
-
                             public boolean sink(EVENT event) {
                                 try {
                                     CanalEntry.Entry entry = parseAndProfilingIfNecessary(event, false);
@@ -243,8 +249,10 @@ public abstract class AbstractEventParser<EVENT> extends AbstractCanalLifeCycle 
                                     throw new CanalParseException(e); // 继续抛出异常，让上层统一感知
                                 }
                             }
-
                         };
+
+
+
 
                         // 4. 开始dump数据
                         if (parallel) {
@@ -350,6 +358,9 @@ public abstract class AbstractEventParser<EVENT> extends AbstractCanalLifeCycle 
                 MDC.remove("destination");
             }
         });
+
+
+
 
         parseThread.setUncaughtExceptionHandler(handler);
         parseThread.setName(String.format("destination = %s , address = %s , EventParser",
@@ -494,16 +505,19 @@ public abstract class AbstractEventParser<EVENT> extends AbstractCanalLifeCycle 
         if (heartBeatTimerTask == null) {// fixed issue #56，避免重复创建heartbeat线程
             heartBeatTimerTask = buildHeartBeatTimeTask(connection);
             Integer interval = detectingIntervalInSeconds;
-            timer.schedule(heartBeatTimerTask, interval * 1000L, interval * 1000L);
+            timer.schedule(heartBeatTimerTask, interval * 1000L);
             logger.info("start heart beat.... ");
         }
     }
 
+
+
     protected TimerTask buildHeartBeatTimeTask(ErosaConnection connection) {
         return new TimerTask() {
-
             public void run() {
                 try {
+
+                    System.out.println("----tasker runing..----");
                     if (exception == null || lastEntryTime > 0) {
                         // 如果未出现异常，或者有第一条正常数据
                         long now = System.currentTimeMillis();
@@ -519,12 +533,10 @@ public abstract class AbstractEventParser<EVENT> extends AbstractCanalLifeCycle 
                             consumeTheEventAndProfilingIfNecessary(Arrays.asList(entry));
                         }
                     }
-
                 } catch (Throwable e) {
                     logger.warn("heartBeat run failed ", e);
                 }
             }
-
         };
     }
 

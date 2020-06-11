@@ -141,6 +141,9 @@ public abstract class AbstractMysqlEventParser extends AbstractEventParser {
     }
 
     public void start() throws CanalParseException {
+
+
+        //- 初始化本地h2数据库的数据源tableMetaTSDB
         if (enableTsdb) {
             if (tableMetaTSDB == null) {
                 synchronized (CanalEventParser.class) {
@@ -240,7 +243,7 @@ public abstract class AbstractMysqlEventParser extends AbstractEventParser {
         }
     }
 
-    public void setTableMetaTSDBFactory(TableMetaTSDBFactory tableMetaTSDBFactory) {
+    public void setTableMetsetTableMetaTSDBaTSDBFactory(TableMetaTSDBFactory tableMetaTSDBFactory) {
         this.tableMetaTSDBFactory = tableMetaTSDBFactory;
     }
 

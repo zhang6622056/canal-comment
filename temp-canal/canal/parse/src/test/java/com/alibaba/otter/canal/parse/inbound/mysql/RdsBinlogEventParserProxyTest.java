@@ -132,8 +132,20 @@ public class RdsBinlogEventParserProxyTest {
     }
 
 
+    public static void main(String[] args) throws Exception {
+        RdsBinlogEventParserProxyTest rdsBinlogEventParserProxyTest = new RdsBinlogEventParserProxyTest();
+        rdsBinlogEventParserProxyTest.testLocalMaster();
+    }
+
+
+
+
     @Test
     public void testLocalMaster() throws Exception {
+
+
+        System.in.read();
+
         final TimeoutChecker timeoutChecker = new TimeoutChecker(3 * 1000);
         final AtomicLong entryCount = new AtomicLong(0);
         final EntryPosition entryPosition = new EntryPosition();
@@ -185,12 +197,20 @@ public class RdsBinlogEventParserProxyTest {
         ZkClientx zkClientx = new ZkClientx("127.0.0.1:2181");
 
         //- 消费位点
+        //- FailbackLogPositionManager param 1 = 优先本地配置的position
+        //- MetaLogPositionManager param2 = 采用配置的zk数据源内的位点
         ZooKeeperMetaManager zooKeeperMetaManager = new ZooKeeperMetaManager();
         zooKeeperMetaManager.setZkClientx(zkClientx);
         PeriodMixedMetaManager periodMixedMetaManager = new PeriodMixedMetaManager();
         periodMixedMetaManager.setZooKeeperMetaManager(zooKeeperMetaManager);
         FailbackLogPositionManager failbackLogPositionManager = new FailbackLogPositionManager(new MemoryLogPositionManager(),new MetaLogPositionManager(periodMixedMetaManager));
+        failbackLogPositionManager.start();
         binlogEventParserProxy.setLogPositionManager(failbackLogPositionManager);
+
+
+
+
+
 
         //-# canal发生mysql切换时，在新的mysql库上查找binlog时需要往前查找的时间，单位秒
         //# 说明：mysql主备库可能存在解析延迟或者时钟不统一，需要回退一段时间，保证数据不丢
@@ -224,6 +244,8 @@ public class RdsBinlogEventParserProxyTest {
         binlogEventParserProxy.setSupportBinlogFormats("ROW,STATEMENT,MIXED");
         binlogEventParserProxy.setSupportBinlogImages("FULL,MINIMAL,NOBLOB");
 
+
+        //- 配置本地h2数据源
         binlogEventParserProxy.setEnableTsdb(true);
         binlogEventParserProxy.setTsdbSpringXml("classpath:spring/tsdb/h2-tsdb.xml");
         binlogEventParserProxy.setTsdbSnapshotExpire(360);
@@ -241,7 +263,7 @@ public class RdsBinlogEventParserProxyTest {
         EntryPosition defaultPosition = new EntryPosition();
         binlogEventParserProxy.setMasterPosition(defaultPosition);
         binlogEventParserProxy.start();
-
+        System.in.read();
 
 
 

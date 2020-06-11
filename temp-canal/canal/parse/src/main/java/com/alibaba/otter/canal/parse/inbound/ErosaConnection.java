@@ -11,16 +11,21 @@ import com.alibaba.otter.canal.parse.driver.mysql.packets.GTIDSet;
  */
 public interface ErosaConnection {
 
+
+    //- 连接
     public void connect() throws IOException;
 
+    //- 重连
     public void reconnect() throws IOException;
 
+    //- 断开连接
     public void disconnect() throws IOException;
 
     /**
      * 用于快速数据查找,和dump的区别在于，seek会只给出部分的数据
      */
     public void seek(String binlogfilename, Long binlogPosition, String gtid, SinkFunction func) throws IOException;
+
 
     public void dump(String binlogfilename, Long binlogPosition, SinkFunction func) throws IOException;
 

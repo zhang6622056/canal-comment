@@ -98,19 +98,23 @@ public class LocalBinlogEventParser extends AbstractMysqlEventParser implements 
         if (tableMetaCache != null) {
             tableMetaCache.clearTableMeta();
         }
-
         super.stop();
     }
 
+
+
+
+
     private ErosaConnection buildLocalBinLogConnection() {
         LocalBinLogConnection connection = new LocalBinLogConnection();
-
         connection.setBufferSize(this.bufferSize);
         connection.setDirectory(this.directory);
         connection.setNeedWait(this.needWait);
-
         return connection;
     }
+
+
+
 
     private MysqlConnection buildMysqlConnection() {
         MysqlConnection connection = new MysqlConnection(runningInfo.getAddress(),
