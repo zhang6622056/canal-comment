@@ -10,6 +10,7 @@ import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.alibaba.otter.canal.parse.inbound.mysql.rds.RdsLocalBinlogEventParser;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang.math.RandomUtils;
@@ -157,7 +158,6 @@ public abstract class AbstractEventParser<EVENT> extends AbstractCanalLifeCycle 
     public void start() {
         super.start();
 
-
         //- 为了便于日志中输出destination,具体可参考
         //- https://www.jianshu.com/p/06b1d35526c2
         MDC.put("destination", destination);
@@ -188,10 +188,13 @@ public abstract class AbstractEventParser<EVENT> extends AbstractCanalLifeCycle 
                         // 开始执行replication
                         // 1. 构造Erosa连接  MysqlConnection
                         erosaConnection = buildErosaConnection();
-                        // 2. 启动一个心跳线程
+                        // 2. 启动一个心跳线程,
+                        // 这里一定要沿着调用路径往前查找。比如mysql要追溯到MysqlEventParser
                         startHeartBeat(erosaConnection);
+
                         // 3. 执行dump前的准备工作
                         preDump(erosaConnection);
+
                         // 链接
                         erosaConnection.connect();
 
@@ -485,6 +488,15 @@ public abstract class AbstractEventParser<EVENT> extends AbstractCanalLifeCycle 
         // do nothing
     }
 
+
+
+    /***
+     * @Description: 这里一定要沿着调用路径往前查找。比如mysql要追溯到MysqlEventParser
+     * @Param: [connection]
+     * @return: void
+     * @Author: zhanglei
+     * @Date: 2020/6/17
+     */
     protected void startHeartBeat(ErosaConnection connection) {
         lastEntryTime = 0L; // 初始化
         if (timer == null) {// lazy初始化一下
@@ -503,21 +515,27 @@ public abstract class AbstractEventParser<EVENT> extends AbstractCanalLifeCycle 
         }
 
         if (heartBeatTimerTask == null) {// fixed issue #56，避免重复创建heartbeat线程
+            //- buildHeartBeatTimeTask from MysqlEventParser
             heartBeatTimerTask = buildHeartBeatTimeTask(connection);
             Integer interval = detectingIntervalInSeconds;
-            timer.schedule(heartBeatTimerTask, interval * 1000L);
+            timer.schedule(heartBeatTimerTask, 1000,1000L);
             logger.info("start heart beat.... ");
         }
     }
 
 
 
+    /****
+     * @Description: 新建心跳任务task
+     * @Param: [connection]
+     * @return: java.util.TimerTask
+     * @Author: zhanglei
+     * @Date: 2020/6/12
+     */
     protected TimerTask buildHeartBeatTimeTask(ErosaConnection connection) {
         return new TimerTask() {
             public void run() {
                 try {
-
-                    System.out.println("----tasker runing..----");
                     if (exception == null || lastEntryTime > 0) {
                         // 如果未出现异常，或者有第一条正常数据
                         long now = System.currentTimeMillis();
@@ -539,6 +557,9 @@ public abstract class AbstractEventParser<EVENT> extends AbstractCanalLifeCycle 
             }
         };
     }
+
+
+
 
     protected void stopHeartBeat() {
         lastEntryTime = 0L; // 初始化

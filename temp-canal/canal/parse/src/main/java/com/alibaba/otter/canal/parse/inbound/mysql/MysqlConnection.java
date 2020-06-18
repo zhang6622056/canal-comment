@@ -40,6 +40,16 @@ import com.taobao.tddl.dbsync.binlog.LogDecoder;
 import com.taobao.tddl.dbsync.binlog.LogEvent;
 import com.taobao.tddl.dbsync.binlog.event.FormatDescriptionLogEvent;
 
+
+
+
+/****
+ * @Description: 模拟mysql的slave connection
+ * @Param: 
+ * @return: 
+ * @Author: zhanglei
+ * @Date: 2020/6/18
+ */
 public class MysqlConnection implements ErosaConnection {
 
     private static final Logger logger         = LoggerFactory.getLogger(MysqlConnection.class);
@@ -120,7 +130,17 @@ public class MysqlConnection implements ErosaConnection {
      * 加速主备切换时的查找速度，做一些特殊优化，比如只解析事务头或者尾
      */
     public void seek(String binlogfilename, Long binlogPosition, String gtid, SinkFunction func) throws IOException {
+        //- 设置一些超时参数等
+//        set wait_timeout=9999999
+//        set net_write_timeout=1800
+//        set net_read_timeout=1800
+//        set names 'binary'
+//        set @master_binlog_checksum= @@global.binlog_checksum
+//        set @slave_uuid=uuid()
+//        SET @mariadb_slave_capability='4‘
+//        SET @master_heartbeat_period='15000000000'
         updateSettings();
+
         loadBinlogChecksum();
         sendBinlogDump(binlogfilename, binlogPosition);
         DirectLogFetcher fetcher = new DirectLogFetcher(connector.getReceiveBufferSize());
@@ -354,6 +374,9 @@ public class MysqlConnection implements ErosaConnection {
         connector.setDumping(true);
     }
 
+
+
+
     public MysqlConnection fork() {
         MysqlConnection connection = new MysqlConnection();
         connection.setCharset(getCharset());
@@ -459,6 +482,7 @@ public class MysqlConnection implements ErosaConnection {
             logger.warn("update master_heartbeat_period failed", e);
         }
     }
+
 
     /**
      * 获取一下binlog format格式

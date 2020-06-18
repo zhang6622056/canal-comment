@@ -75,10 +75,23 @@ public class MysqlEventParser extends AbstractMysqlEventParser implements CanalE
         return buildMysqlConnection(this.runningInfo);
     }
 
+
+
+
+
+    /***
+     * @Description: 开始dump前的准备工作，由AbstractEventParser -- parseThread.start run 调用过来
+     * @Param: [connection]
+     * @return: void
+     * @Author: zhanglei
+     * @Date: 2020/6/18
+     */
     protected void preDump(ErosaConnection connection) {
         if (!(connection instanceof MysqlConnection)) {
             throw new CanalParseException("Unsupported connection type : " + connection.getClass().getSimpleName());
         }
+
+
 
         if (binlogParser != null && binlogParser instanceof LogEventConvert) {
             metaConnection = (MysqlConnection) connection.fork();
@@ -132,6 +145,10 @@ public class MysqlEventParser extends AbstractMysqlEventParser implements CanalE
         }
     }
 
+
+
+
+
     protected void afterDump(ErosaConnection connection) {
         super.afterDump(connection);
 
@@ -153,6 +170,15 @@ public class MysqlEventParser extends AbstractMysqlEventParser implements CanalE
         }
     }
 
+
+
+    /***
+     * @Description: 重新启动
+     * @Param: []
+     * @return: void
+     * @Author: zhanglei
+     * @Date: 2020/6/17
+     */
     public void start() throws CanalParseException {
         if (runningInfo == null) { // 第一次链接主库
             runningInfo = masterInfo;
@@ -161,6 +187,16 @@ public class MysqlEventParser extends AbstractMysqlEventParser implements CanalE
         super.start();
     }
 
+
+
+
+    /***
+     * @Description:
+     * @Param: []
+     * @return: void
+     * @Author: zhanglei
+     * @Date: 2020/6/17
+     */
     public void stop() throws CanalParseException {
         if (metaConnection != null) {
             try {
@@ -178,6 +214,15 @@ public class MysqlEventParser extends AbstractMysqlEventParser implements CanalE
         super.stop();
     }
 
+
+
+    /***
+     * @Description: 在AbstractEventParser中调用的方法，这个要跟随调用路径查找到最开始的根源
+     * @Param: [connection]
+     * @return: java.util.TimerTask
+     * @Author: zhanglei
+     * @Date: 2020/6/17
+     */
     protected TimerTask buildHeartBeatTimeTask(ErosaConnection connection) {
         if (!(connection instanceof MysqlConnection)) {
             throw new CanalParseException("Unsupported connection type : " + connection.getClass().getSimpleName());
@@ -208,7 +253,7 @@ public class MysqlEventParser extends AbstractMysqlEventParser implements CanalE
 
     /**
      * 心跳信息
-     *
+     * TODO-NOW.
      * @author jianghang 2012-7-6 下午02:50:15
      * @version 1.0.0
      */
@@ -278,6 +323,15 @@ public class MysqlEventParser extends AbstractMysqlEventParser implements CanalE
         this.doSwitch(newRunningInfo);
     }
 
+
+
+    /***
+     * @Description: 执行主备切换。
+     * @Param: [newRunningInfo] 当前处于standBy的Server
+     * @return: void
+     * @Author: zhanglei
+     * @Date: 2020/6/17
+     */
     public void doSwitch(AuthenticationInfo newRunningInfo) {
         // 1. 需要停止当前正在复制的过程
         // 2. 找到新的position点
@@ -298,6 +352,8 @@ public class MysqlEventParser extends AbstractMysqlEventParser implements CanalE
             sendAlarm(destination, alarmMessage);
             return;
         } else {
+
+            //- 停止当前server
             stop();
             alarmMessage = "try to ha switch, old:" + runningInfo.getAddress().toString() + ", new:"
                            + newRunningInfo.getAddress().toString();
@@ -351,6 +407,8 @@ public class MysqlEventParser extends AbstractMysqlEventParser implements CanalE
             throw new CanalParseException("Unknown host", e);
         }
     }
+
+
 
     protected EntryPosition findStartPosition(ErosaConnection connection) throws IOException {
         if (isGTIDMode()) {

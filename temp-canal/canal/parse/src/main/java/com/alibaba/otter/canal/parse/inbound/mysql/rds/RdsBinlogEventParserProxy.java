@@ -117,6 +117,7 @@ public class RdsBinlogEventParserProxy extends MysqlEventParser {
 
     @Override
     public void start() {
+        //- ali oss 特殊处理，不必理会
         setAliMysqlSettings();
         super.start();
     }

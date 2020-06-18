@@ -142,10 +142,7 @@ public class RdsBinlogEventParserProxyTest {
 
     @Test
     public void testLocalMaster() throws Exception {
-
-
         System.in.read();
-
         final TimeoutChecker timeoutChecker = new TimeoutChecker(3 * 1000);
         final AtomicLong entryCount = new AtomicLong(0);
         final EntryPosition entryPosition = new EntryPosition();
@@ -154,16 +151,24 @@ public class RdsBinlogEventParserProxyTest {
         binlogEventParserProxy.setSlaveId(3344L);
         binlogEventParserProxy.setDestination("ocs_test");
 
+
+
+        //- 自动切换mysql standby 的主机
         //- 心跳相关
         binlogEventParserProxy.setDetectingEnable(true);
         binlogEventParserProxy.setDetectingSQL("select 1");
         binlogEventParserProxy.setDetectingIntervalInSeconds(5);
-
         //- 心跳检测3次失败，自动切换
         HeartBeatHAController heartBeatHAController = new HeartBeatHAController();
+        //- 重试3次失败，进入ha切换。
         heartBeatHAController.setDetectingRetryTimes(3);
+        //- 是否打开自动ha
         heartBeatHAController.setSwitchEnable(true);
+        //- 备用的mysql 切换parser
+        heartBeatHAController.setCanalHASwitchable(binlogEventParserProxy);
         binlogEventParserProxy.setHaController(heartBeatHAController);
+
+
 
         //- TODO-ZL
         LogAlarmHandler logAlarmHandler = new LogAlarmHandler();
@@ -222,6 +227,11 @@ public class RdsBinlogEventParserProxyTest {
         authenticationInfo.initPwd();
         binlogEventParserProxy.setMasterInfo(authenticationInfo);
 
+        //- 用于主机故障时的自动ha切换。
+        //- binlogEventParserProxy.setStandbyInfo();
+
+
+
         //- 指定从某个位置开始解析
         EntryPosition masterPosition = new EntryPosition();
         binlogEventParserProxy.setMasterPosition(masterPosition);
@@ -259,11 +269,41 @@ public class RdsBinlogEventParserProxyTest {
         binlogEventParserProxy.setParallelThreadSize(256);
 
 
+        //- eventSink
+        binlogEventParserProxy.setEventSink(new AbstractCanalEventSinkTest<List<CanalEntry.Entry>>() {
+
+            @Override
+            public boolean sink(List<CanalEntry.Entry> entrys, InetSocketAddress remoteAddress, String destination)
+                    throws CanalSinkException {
+                for (CanalEntry.Entry entry : entrys) {
+                    if (entry.getEntryType() != CanalEntry.EntryType.HEARTBEAT) {
+                        entryCount.incrementAndGet();
+
+                        String logfilename = entry.getHeader().getLogfileName();
+                        long logfileoffset = entry.getHeader().getLogfileOffset();
+                        long executeTime = entry.getHeader().getExecuteTime();
+
+                        entryPosition.setJournalName(logfilename);
+                        entryPosition.setPosition(logfileoffset);
+                        entryPosition.setTimestamp(executeTime);
+                        break;
+                    }
+                }
+                return true;
+            }
+        });
+
+
+
+
         //TODO-ZL 暂不指定，默认运行
         EntryPosition defaultPosition = new EntryPosition();
         binlogEventParserProxy.setMasterPosition(defaultPosition);
         binlogEventParserProxy.start();
-        System.in.read();
+
+
+
+
 
 
 
