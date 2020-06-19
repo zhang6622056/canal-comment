@@ -198,26 +198,27 @@ public abstract class AbstractEventParser<EVENT> extends AbstractCanalLifeCycle 
                         // 链接
                         erosaConnection.connect();
 
-
+                        //- slaveId
                         long queryServerId = erosaConnection.queryServerId();
                         if (queryServerId != 0) {
                             serverId = queryServerId;
                         }
-                        // 4. 获取最后的位置信息
+
+
+                        // 4. 获取最后的位置信息 show master status
                         long start = System.currentTimeMillis();
                         logger.warn("---> begin to find start position, it will be long time for reset or first position");
                         EntryPosition position = findStartPosition(erosaConnection);
                         final EntryPosition startPosition = position;
                         if (startPosition == null) { throw new PositionNotFoundException("can't find start position for " + destination); }
-                        if (!processTableMeta(startPosition)) {
-                            throw new CanalParseException("can't find init table meta for " + destination + " with position : " + startPosition);
-                        }
+                        if (!processTableMeta(startPosition)) { throw new CanalParseException("can't find init table meta for " + destination + " with position : " + startPosition); }
                         long end = System.currentTimeMillis();
                         logger.warn("---> find start position successfully, {}", startPosition.toString() + " cost : "
                                                                                  + (end - start)
                                                                                  + "ms , the next step is binlog dump");
-                        // 重新链接，因为在找position过程中可能有状态，需要断开后重建
+                        // 重新链接，因为在找position过程中可能有状态，需要断开后重建 TODO-ZL 这里不太理解。所谓的状态是什么？
                         erosaConnection.reconnect();
+
 
                         final SinkFunction sinkHandler = new SinkFunction<EVENT>() {
                             private LogPosition lastPosition;

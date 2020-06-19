@@ -87,6 +87,8 @@ public class MysqlEventParser extends AbstractMysqlEventParser implements CanalE
      * @Date: 2020/6/18
      */
     protected void preDump(ErosaConnection connection) {
+
+        //- 判定connection，目前只支持mysql
         if (!(connection instanceof MysqlConnection)) {
             throw new CanalParseException("Unsupported connection type : " + connection.getClass().getSimpleName());
         }
@@ -94,6 +96,8 @@ public class MysqlEventParser extends AbstractMysqlEventParser implements CanalE
 
 
         if (binlogParser != null && binlogParser instanceof LogEventConvert) {
+
+            //- connection
             metaConnection = (MysqlConnection) connection.fork();
             try {
                 metaConnection.connect();
@@ -101,6 +105,7 @@ public class MysqlEventParser extends AbstractMysqlEventParser implements CanalE
                 throw new CanalParseException(e);
             }
 
+            //-binlog images
             if (supportBinlogFormats != null && supportBinlogFormats.length > 0) {
                 BinlogFormat format = ((MysqlConnection) metaConnection).getBinlogFormat();
                 boolean found = false;
@@ -131,6 +136,8 @@ public class MysqlEventParser extends AbstractMysqlEventParser implements CanalE
                 }
             }
 
+
+            //- TableMetaTSDB
             if (tableMetaTSDB != null && tableMetaTSDB instanceof DatabaseTableMeta) {
                 ((DatabaseTableMeta) tableMetaTSDB).setConnection(metaConnection);
                 ((DatabaseTableMeta) tableMetaTSDB).setFilter(eventFilter);

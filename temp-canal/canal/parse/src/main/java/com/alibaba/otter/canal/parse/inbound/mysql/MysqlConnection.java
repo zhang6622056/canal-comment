@@ -176,9 +176,30 @@ public class MysqlConnection implements ErosaConnection {
         }
     }
 
+
+
+
+    /****
+     * @Description: dump 数据
+     * @Param: [binlogfilename, binlogPosition, func] 
+     * @return: void
+     * @Author: zhanglei
+     * @Date: 2020/6/19
+     */
     public void dump(String binlogfilename, Long binlogPosition, SinkFunction func) throws IOException {
+        //- 设置一些超时参数等
+//        set wait_timeout=9999999
+//        set net_write_timeout=1800
+//        set net_read_timeout=1800
+//        set names 'binary'
+//        set @master_binlog_checksum= @@global.binlog_checksum
+//        set @slave_uuid=uuid()
+//        SET @mariadb_slave_capability='4‘
+//        SET @master_heartbeat_period='15000000000'
         updateSettings();
+        //- CheckSum
         loadBinlogChecksum();
+        //-
         sendRegisterSlave();
         sendBinlogDump(binlogfilename, binlogPosition);
         DirectLogFetcher fetcher = new DirectLogFetcher(connector.getReceiveBufferSize());
