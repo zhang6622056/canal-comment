@@ -399,6 +399,7 @@ public class MysqlConnection implements ErosaConnection {
         connector.setDumping(true);
     }
 
+
     public void sendSemiAck(String binlogfilename, Long binlogPosition) throws IOException {
         SemiAckCommandPacket semiAckCmd = new SemiAckCommandPacket();
         semiAckCmd.binlogFileName = binlogfilename;
