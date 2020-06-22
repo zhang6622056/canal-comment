@@ -155,6 +155,9 @@ public class MysqlConnector {
         PacketManager.writePkg(channel, quitHeader.toBytes(), cmdBody);
     }
 
+
+
+
     private void negotiate(SocketChannel channel) throws IOException {
         // https://dev.mysql.com/doc/internals/en/connection-phase-packets.html#packet-Protocol
         HeaderPacket header = PacketManager.readHeader(channel, 4, timeout);

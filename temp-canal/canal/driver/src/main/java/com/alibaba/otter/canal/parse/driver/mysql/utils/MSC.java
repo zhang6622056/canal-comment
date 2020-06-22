@@ -15,7 +15,11 @@ public abstract class MSC {
     public static final int  HEADER_PACKET_NUMBER_FIELD_LENGTH  = 1;
 
     public static final byte NULL_TERMINATED_STRING_DELIMITER   = 0x00;
+
+    //- 协议版本号
     public static final byte DEFAULT_PROTOCOL_VERSION           = 0x0a;
+
+
 
     public static final int  FIELD_COUNT_FIELD_LENGTH           = 1;
 

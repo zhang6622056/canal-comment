@@ -263,8 +263,7 @@ public class RdsBinlogEventParserProxyTest {
 
 
         binlogEventParserProxy.setIsGTIDMode(false);
-
-        binlogEventParserProxy.setParallel(true);
+        binlogEventParserProxy.setParallel(false);
         binlogEventParserProxy.setParallelBufferSize(16);
         binlogEventParserProxy.setParallelThreadSize(256);
 

@@ -199,8 +199,9 @@ public class MysqlConnection implements ErosaConnection {
         updateSettings();
         //- CheckSum
         loadBinlogChecksum();
-        //-
+        //- 向mysql 主机发送，注册消息
         sendRegisterSlave();
+        //-
         sendBinlogDump(binlogfilename, binlogPosition);
         DirectLogFetcher fetcher = new DirectLogFetcher(connector.getReceiveBufferSize());
         fetcher.start(connector.getChannel());
@@ -232,6 +233,7 @@ public class MysqlConnection implements ErosaConnection {
         loadBinlogChecksum();
         sendBinlogDumpGTID(gtidSet);
 
+        //- LOG BUFFER  -> connector -> channel
         DirectLogFetcher fetcher = new DirectLogFetcher(connector.getReceiveBufferSize());
         try {
             fetcher.start(connector.getChannel());
@@ -262,6 +264,15 @@ public class MysqlConnection implements ErosaConnection {
         throw new NullPointerException("Not implement yet");
     }
 
+
+
+    /***
+     * @Description: this by invoked..
+     * @Param: [binlogfilename, binlogPosition, coprocessor] 
+     * @return: void
+     * @Author: zhanglei
+     * @Date: 2020/6/22
+     */
     @Override
     public void dump(String binlogfilename, Long binlogPosition, MultiStageCoprocessor coprocessor) throws IOException {
         updateSettings();
@@ -314,6 +325,15 @@ public class MysqlConnection implements ErosaConnection {
         }
     }
 
+
+
+    /***
+     * @Description: 注册slave，这里采用Netty与服务器进行通信
+     * @Param: []
+     * @return: void
+     * @Author: zhanglei
+     * @Date: 2020/6/19
+     */
     private void sendRegisterSlave() throws IOException {
         RegisterSlaveCommandPacket cmd = new RegisterSlaveCommandPacket();
         SocketAddress socketAddress = connector.getChannel().getLocalSocketAddress();
@@ -336,8 +356,11 @@ public class MysqlConnection implements ErosaConnection {
         HeaderPacket header = new HeaderPacket();
         header.setPacketBodyLength(cmdBody.length);
         header.setPacketSequenceNumber((byte) 0x00);
+
+        //- 发送请求
         PacketManager.writePkg(connector.getChannel(), header.toBytes(), cmdBody);
 
+        
         header = PacketManager.readHeader(connector.getChannel(), 4);
         byte[] body = PacketManager.readBytes(connector.getChannel(), header.getPacketBodyLength());
         assert body != null;
@@ -352,6 +375,15 @@ public class MysqlConnection implements ErosaConnection {
         }
     }
 
+    
+    
+    /****
+     * @Description: 发送dump请求
+     * @Param: [binlogfilename, binlogPosition] 
+     * @return: void
+     * @Author: zhanglei
+     * @Date: 2020/6/22
+     */
     private void sendBinlogDump(String binlogfilename, Long binlogPosition) throws IOException {
         BinlogDumpCommandPacket binlogDumpCmd = new BinlogDumpCommandPacket();
         binlogDumpCmd.binlogFileName = binlogfilename;

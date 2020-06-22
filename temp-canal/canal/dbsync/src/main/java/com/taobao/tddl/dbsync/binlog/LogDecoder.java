@@ -89,6 +89,9 @@ public final class LogDecoder {
 
     /**
      * Decoding an event from binary-log buffer.
+     * - 将
+     *
+     *
      *
      * @return <code>UknownLogEvent</code> if event type is unknown or skipped,
      * <code>null</code> if buffer is not including a full event.

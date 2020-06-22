@@ -243,7 +243,7 @@ public abstract class AbstractMysqlEventParser extends AbstractEventParser {
         }
     }
 
-    public void setTableMetsetTableMetaTSDBaTSDBFactory(TableMetaTSDBFactory tableMetaTSDBFactory) {
+    public void setTableMetaTSDBFactory(TableMetaTSDBFactory tableMetaTSDBFactory) {
         this.tableMetaTSDBFactory = tableMetaTSDBFactory;
     }
 
