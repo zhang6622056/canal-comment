@@ -148,14 +148,11 @@ public class CanalLauncher {
             logger.info("## set default uncaught exception handler");
             //- 统一捕获子线程异常
             setGlobalUncaughtExceptionHandler();
-
-
             //1- 加载properties 配置文件
             Properties properties = loadProertiesConfigToPropertiesByClassLoader();
             //2- 执行admin相关逻辑，暂时不予分析
             //- 并将properties配置属性放入CanController中
             CanalStarter canalStater = doAdminManager(properties);
-
             //- 委派启动脚本给canalStarter
             canalStater.start();
             runningLatch.await();
